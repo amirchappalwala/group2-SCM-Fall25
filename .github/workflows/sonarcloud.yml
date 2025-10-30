@@ -31,10 +31,11 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Build and analyze
+      - name: Build and analyze (from common/)
+        working-directory: ./common
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=group2-SCM-Fall25 \
-          -Dsonar.organization=amirchappalwala
+            -Dsonar.projectKey=group2-SCM-Fall25 \
+            -Dsonar.organization=amirchappalwala
