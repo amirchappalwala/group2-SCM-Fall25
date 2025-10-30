@@ -38,7 +38,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
@@ -131,7 +130,7 @@ public abstract class BasicAnnotationProcessor extends AbstractProcessor {
 
   private Elements elementUtils;
   private Messager messager;
-  private ImmutableList<? extends Step> steps;
+  private ImmutableList<Step> steps;
 
   @Override
   public final synchronized void init(ProcessingEnvironment processingEnv) {
@@ -159,9 +158,7 @@ public abstract class BasicAnnotationProcessor extends AbstractProcessor {
    * <p>Note: If you are migrating some steps from {@link ProcessingStep} to {@link Step}, then you
    * can call {@link #asStep(ProcessingStep)} on any unmigrated steps.
    */
-  protected Iterable<? extends Step> steps() {
-    return Iterables.transform(initSteps(), BasicAnnotationProcessor::asStep);
-  }
+  protected abstract Iterable<Step> steps();
 
   /**
    * An optional hook for logic to be executed at the end of each round.
@@ -173,9 +170,7 @@ public abstract class BasicAnnotationProcessor extends AbstractProcessor {
 
   /** An optional hook for logic to be executed at the end of each round. */
   protected void postRound(RoundEnvironment roundEnv) {
-    if (!roundEnv.processingOver()) {
-      postProcess();
-    }
+    // Default implementation is empty. Subclasses can override to add post-round logic.
   }
 
   private ImmutableSet<TypeElement> getSupportedAnnotationTypeElements() {
