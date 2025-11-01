@@ -731,6 +731,7 @@ public abstract class BasicAnnotationProcessor extends AbstractProcessor {
           .collect(onlyElement());
     }
 
+
     @Override
     public boolean equals(@Nullable Object object) {
       if (!super.equals(object) || !(object instanceof FieldOrRecordComponentElementFactory)) {
