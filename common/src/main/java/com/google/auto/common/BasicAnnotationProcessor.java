@@ -634,6 +634,17 @@ public abstract class BasicAnnotationProcessor extends AbstractProcessor {
       super(element);
       this.element = element;
     }
+      @Override //hiba
+      public boolean equals(Object obj) {
+          if (this == obj) return true;
+          if (!(obj instanceof UnsupportedElementFactory)) return false;
+          UnsupportedElementFactory other = (UnsupportedElementFactory) obj;
+          return Objects.equals(this.element, other.element);
+}
+      @Override
+      public int hashCode() {
+          return Objects.hash(element);
+      }
 
     @Override
     Element getElement(Elements elementUtils) {
@@ -730,6 +741,7 @@ public abstract class BasicAnnotationProcessor extends AbstractProcessor {
                   elementKind.equals(element.getKind()) && toString.equals(element.toString()))
           .collect(onlyElement());
     }
+
 
     @Override
     public boolean equals(@Nullable Object object) {
