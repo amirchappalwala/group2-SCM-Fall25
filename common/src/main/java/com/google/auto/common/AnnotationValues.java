@@ -220,7 +220,7 @@ public final class AnnotationValues {
       return value;
     }
   }
-  ;
+  
 
   /**
    * Returns the value as an AnnotationMirror.
