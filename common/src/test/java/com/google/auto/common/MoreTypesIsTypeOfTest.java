@@ -54,9 +54,9 @@ public class MoreTypesIsTypeOfTest {
   @Test
   public void isTypeOf_primitiveAndBoxedPrimitiveTypes() {
     class PrimitiveTypeInfo {
-      final Class<?> CLASS_TYPE;
-      final Class<?> BOXED_CLASS_TYPE;
-      final TypeKind TYPE_KIND;
+      final Class<?> class_type;
+      final Class<?> boxed_class_type;
+      final TypeKind type_kind;
 
       PrimitiveTypeInfo(Class<?> classType, Class<?> boxedClassType, TypeKind typeKind) {
         this.CLASS_TYPE = classType;
