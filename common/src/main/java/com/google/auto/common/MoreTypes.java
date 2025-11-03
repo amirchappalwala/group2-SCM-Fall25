@@ -312,7 +312,7 @@ public final class MoreTypes {
           new ComparedElements(
               a, ImmutableList.<TypeMirror>copyOf(aArguments),
               b, ImmutableList.<TypeMirror>copyOf(bArguments));
-      Set<ComparedElements> newVisiting = new HashSet<ComparedElements>(visiting);
+      Set<ComparedElements> newVisiting = new HashSet<>(visiting);
       newVisiting.add(comparedElements);
       return newVisiting;
     }
