@@ -197,8 +197,6 @@ public final class AnnotationValues {
       return MoreTypes.asDeclared(value);
     }
   }
-
-
   ;
 
   /**
