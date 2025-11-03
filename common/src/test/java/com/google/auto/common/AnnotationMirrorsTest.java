@@ -19,7 +19,6 @@ import static com.google.auto.common.AnnotationMirrorsTest.SimpleEnum.BLAH;
 import static com.google.auto.common.AnnotationMirrorsTest.SimpleEnum.FOO;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.testing.compile.CompilationSubject.assertThat;
 import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableSet;
