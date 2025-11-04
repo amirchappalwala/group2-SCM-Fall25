@@ -30,11 +30,7 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and verify
-        run: mvn -B verify -f build-pom.xml
-
-      - name: SonarQube analysis (only on main branch)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f build-pom.xml -Dsonar.projectKey=amirchappalwala_group2-SCM-Fall25 -Dsonar.host.url=http://localhost:9000
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f build-pom.xml -Dsonar.projectKey=amirchappalwala_group2-SCM-Fall25
