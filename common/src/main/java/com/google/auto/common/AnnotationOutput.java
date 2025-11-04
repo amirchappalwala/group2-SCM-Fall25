@@ -166,10 +166,34 @@ final class AnnotationOutput {
       }
       return null;
     }
-  }
+    
+    private static AnnotationValue maybeShorten(AnnotationValue value) {
+      return ARRAY_VISITOR.visit(value, value);
+    }
 
-  private static AnnotationValue maybeShorten(AnnotationValue value) {
-    return ARRAY_VISITOR.visit(value, value);
+    private static StringBuilder appendQuoted(StringBuilder sb, String s) {
+      sb.append('"');
+      for (int i = 0; i < s.length(); i++) {
+        appendEscaped(sb, s.charAt(i));
+      }
+      return sb.append('"');
+    }
+
+    private static StringBuilder appendQuoted(StringBuilder sb, char c) {
+      sb.append('\'');
+      appendEscaped(sb, c);
+      return sb.append('\'');
+    }
+
+    // We can shorten @Annot(value = 23) to @Annot(23).
+    private static Optional<AnnotationValue> shortForm(
+        Map<ExecutableElement, AnnotationValue> values) {
+      if (values.size() == 1
+          && Iterables.getOnlyElement(values.keySet()).getSimpleName().contentEquals("value")) {
+        return Optional.of(Iterables.getOnlyElement(values.values()));
+      }
+      return Optional.empty();
+    } 
   }
 
   private static final AnnotationValueVisitor<AnnotationValue, AnnotationValue> ARRAY_VISITOR =
@@ -191,17 +215,7 @@ final class AnnotationOutput {
           return input;
         }
       };
-
-  // We can shorten @Annot(value = 23) to @Annot(23).
-  private static Optional<AnnotationValue> shortForm(
-      Map<ExecutableElement, AnnotationValue> values) {
-    if (values.size() == 1
-        && Iterables.getOnlyElement(values.keySet()).getSimpleName().contentEquals("value")) {
-      return Optional.of(Iterables.getOnlyElement(values.values()));
-    }
-    return Optional.empty();
-  }
-
+  
   /**
    * Returns a string representation of the given annotation value, suitable for inclusion in a Java
    * source file as the initializer of a variable of the appropriate type.
@@ -221,21 +235,7 @@ final class AnnotationOutput {
     new SourceFormVisitor().visitAnnotation(annotationMirror, sb);
     return sb.toString();
   }
-
-  private static StringBuilder appendQuoted(StringBuilder sb, String s) {
-    sb.append('"');
-    for (int i = 0; i < s.length(); i++) {
-      appendEscaped(sb, s.charAt(i));
-    }
-    return sb.append('"');
-  }
-
-  private static StringBuilder appendQuoted(StringBuilder sb, char c) {
-    sb.append('\'');
-    appendEscaped(sb, c);
-    return sb.append('\'');
-  }
-
+  
   private static void appendEscaped(StringBuilder sb, char c) {
     switch (c) {
       case '\\':
