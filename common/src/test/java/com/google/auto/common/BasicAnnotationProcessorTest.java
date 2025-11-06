@@ -87,7 +87,7 @@ public class BasicAnnotationProcessorTest {
         ImmutableList.builder();
 
     @Override
-    protected Iterable<Step> steps() {
+    protected Iterable<? extends Step> steps() {
       return ImmutableList.of(
           new Step() {
             @Override
@@ -129,7 +129,7 @@ public class BasicAnnotationProcessorTest {
         ImmutableList.builder();
 
     @Override
-    protected Iterable<Step> steps() {
+    protected Iterable<? extends Step> steps() {
       return ImmutableSet.of(
           new Step() {
             @Override
@@ -176,7 +176,7 @@ public class BasicAnnotationProcessorTest {
         ImmutableList.builder();
 
     @Override
-    protected Iterable<Step> steps() {
+    protected Iterable<? extends Step> steps() {
       return ImmutableSet.of(
           new Step() {
             @Override
@@ -234,7 +234,7 @@ public class BasicAnnotationProcessorTest {
   /** Generates a class called {@code test.SomeGeneratedClass}. */
   public static class GeneratesCodeProcessor extends BaseAnnotationProcessor {
     @Override
-    protected Iterable<Step> steps() {
+    protected Iterable<? extends Step> steps() {
       return ImmutableList.of(
           new Step() {
             @Override
@@ -258,7 +258,7 @@ public class BasicAnnotationProcessorTest {
   public static class AnAnnotationProcessor extends BaseAnnotationProcessor {
 
     @Override
-    protected Iterable<Step> steps() {
+    protected Iterable<? extends Step> steps() {
       return ImmutableList.of(
           new Step() {
             @Override
@@ -285,7 +285,7 @@ public class BasicAnnotationProcessorTest {
   public static class CauseErrorProcessor extends BaseAnnotationProcessor {
 
     @Override
-    protected Iterable<Step> steps() {
+    protected Iterable<? extends Step> steps() {
       return ImmutableList.of(
           new Step() {
             @Override
@@ -310,7 +310,7 @@ public class BasicAnnotationProcessorTest {
     private ImmutableSetMultimap<String, Element> elementsByAnnotation;
 
     @Override
-    protected Iterable<Step> steps() {
+    protected Iterable<? extends Step> steps() {
       return ImmutableList.of(
           new Step() {
             @Override
