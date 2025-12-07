@@ -218,10 +218,16 @@ public class AutoFactoryProcessorTest {
     }
   }
 
+  // Vulnerability Fixed by Hamza and Shahab
   private void updateGoldenFile(Compilation compilation, String className, String relativePath)
       throws IOException {
-    Path goldenFileRootPath = Paths.get(GOLDEN_FILE_ROOT);
-    Path goldenFilePath = goldenFileRootPath.resolve(relativePath);
+    Path goldenFileRootPath = Paths.get(GOLDEN_FILE_ROOT).toAbsolutePath().normalize();
+    Path goldenFilePath = goldenFileRootPath.resolve(relativePath).toAbsolutePath().normalize();
+
+    if (!goldenFilePath.startsWith(goldenFileRootPath)) {
+        throw new IllegalArgumentException("Path traversal attempt detected: " + relativePath);
+    }
+
     checkState(
         Files.isRegularFile(goldenFilePath) && Files.isWritable(goldenFilePath),
         "%s does not exist or can't be written",
@@ -231,22 +237,19 @@ public class AutoFactoryProcessorTest {
         compilation
             .generatedSourceFile(className)
             .orElseThrow(() -> new IllegalStateException("No generated file for " + className));
-    // We can't use Files.readString here because this test must run on Java 8.
+            
     String oldContent = new String(Files.readAllBytes(goldenFilePath), UTF_8);
     String newContent =
         newJavaFileObject.getCharContent(/* ignoreEncodingErrors= */ false).toString();
 
-    // We want to preserve the copyright notice and some minor Google-internal things that are
-    // stripped from the open-source version. So keep text from the old golden file before the
-    // class declaration.
     int oldPosition = indexOfClassStartIn(oldContent, "original " + relativePath);
     int newPosition = indexOfClassStartIn(newContent, "generated " + relativePath);
     String updatedContent =
         oldContent.substring(0, oldPosition) + newContent.substring(newPosition);
-    // We can't use Files.writeString here because this test must run on Java 8.
+        
     Files.write(goldenFilePath, updatedContent.getBytes(UTF_8));
     System.err.println("Updated " + goldenFilePath);
-  }
+}
 
   private int indexOfClassStartIn(String content, String where) {
     Matcher matcher = CLASS_START.matcher(content);
