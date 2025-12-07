@@ -28,6 +28,8 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -68,14 +70,19 @@ public final class SimpleServiceLoaderTest {
         loaderForJarWithEntries(
             CharSequence.class.getName(), String.class.getName(), StringBuilder.class.getName());
     ClassLoader combinedLoader =
-        new ClassLoader() {
-          @Override
-          public Enumeration<URL> getResources(String name) throws IOException {
-            List<URL> urls = new ArrayList<>(Collections.list(loader1.getResources(name)));
-            urls.addAll(Collections.list(loader2.getResources(name)));
-            return Collections.enumeration(urls);
-          }
-        };
+        AccessController.doPrivileged( new PrivilegedAction<ClassLoader>() {
+             @Override
+             public ClassLoader run() {
+                 return new ClassLoader() {
+                     @Override
+                     public Enumeration<URL> getResources(String name) throws IOException {
+                         List<URL> urls = new ArrayList<>(Collections.list(loader1.getResources(name)));
+                         urls.addAll(Collections.list(loader2.getResources(name)));
+                         return Collections.enumeration(urls);
+                     }
+                 };
+             }
+        });
 
     ImmutableList<CharSequence> providers =
         SimpleServiceLoader.load(CharSequence.class, combinedLoader);
