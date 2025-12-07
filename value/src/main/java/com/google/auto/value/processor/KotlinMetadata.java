@@ -99,7 +99,7 @@ final class KotlinMetadata {
     ImmutableMap<ImmutableSet<String>, ExecutableElement> paramNamesToConstructor =
         ImmutableMap.copyOf(map);
     KotlinClassHeader header =
-        new KotlinClassHeader(
+        KotlinClassHeader.create(
             (Integer) annotationValues.get("k").getValue(),
             intArrayValue(annotationValues.get("mv")),
             stringArrayValue(annotationValues.get("d1")),
@@ -164,13 +164,23 @@ final class KotlinMetadata {
   // allows us to write client code that is essentially the same as if we were using the real API.
   // Otherwise the logic would be obscured by all the reflective calls.
 
-  private static class KotlinClassHeader {
+  private static final class KotlinClassHeader {
     final Object /* KotlinClassHeader */ wrapped;
 
-    KotlinClassHeader(
+    private KotlinClassHeader(Object wrapped) {
+      // Private constructor ensures complete initialization before object is exposed
+      if (wrapped == null) {
+        throw new IllegalArgumentException("wrapped object cannot be null");
+      }
+      this.wrapped = wrapped;
+    }
+
+    static KotlinClassHeader create(
         Integer k, int[] mv, String[] d1, String[] d2, String xs, String pn, Integer xi)
         throws ReflectiveOperationException {
-      this.wrapped = NEW_KOTLIN_CLASS_HEADER.newInstance(k, mv, d1, d2, xs, pn, xi);
+      // Static factory method ensures the object is fully initialized before returning
+      Object wrappedInstance = NEW_KOTLIN_CLASS_HEADER.newInstance(k, mv, d1, d2, xs, pn, xi);
+      return new KotlinClassHeader(wrappedInstance);
     }
   }
 
