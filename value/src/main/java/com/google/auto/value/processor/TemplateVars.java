@@ -60,14 +60,23 @@ abstract class TemplateVars {
   private final ImmutableList<Field> fields;
 
   TemplateVars() {
-    this.fields = getFields(getClass());
+      ImmutableList<Field> validatedFields = getFields(getClass());
+      // Only assign after successful validation
+      this.fields = validatedFields;
   }
 
   private static ImmutableList<Field> getFields(Class<?> c) {
+    if (c == null) {
+      throw new IllegalArgumentException("Class cannot be null");
+    }
     ImmutableList.Builder<Field> fieldsBuilder = ImmutableList.builder();
-    while (c != TemplateVars.class) {
-      addFields(fieldsBuilder, c.getDeclaredFields());
-      c = c.getSuperclass();
+    Class<?> currentClass = c;
+    while (currentClass != TemplateVars.class) {
+      addFields(fieldsBuilder, currentClass.getDeclaredFields());
+      currentClass = currentClass.getSuperclass();
+      if (currentClass == null) {
+        throw new IllegalStateException("Class hierarchy does not extend TemplateVars");
+      }
     }
     return fieldsBuilder.build();
   }
