@@ -60,7 +60,9 @@ abstract class TemplateVars {
   private final ImmutableList<Field> fields;
 
   TemplateVars() {
-    this.fields = getFields(getClass());
+      ImmutableList<Field> validatedFields = getFields(getClass());
+      // Only assign after successful validation
+      this.fields = validatedFields;
   }
 
   private static ImmutableList<Field> getFields(Class<?> c) {
