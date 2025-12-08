@@ -224,7 +224,9 @@ public class AutoFactoryProcessorTest {
     Path goldenFileRootPath = Paths.get(GOLDEN_FILE_ROOT).toAbsolutePath().normalize();
     Path goldenFilePath = goldenFileRootPath.resolve(relativePath).toAbsolutePath().normalize();
 
-
+    if (!goldenFilePath.startsWith(goldenFileRootPath)) {
+        throw new IllegalArgumentException("Path traversal attempt detected: " + relativePath);
+    }
 
     checkState(
         Files.isRegularFile(goldenFilePath) && Files.isWritable(goldenFilePath),
